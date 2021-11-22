@@ -28,6 +28,12 @@ public class RegistroPrevidenziale {
 		this.codicePrevidenziale = codicePrevidenziale;
 	}
 
+	public RegistroPrevidenziale(Long id, String nome, String cognome, String codiceFiscale,
+			String codicePrevidenziale) {
+		this(nome, cognome, codiceFiscale, codicePrevidenziale);
+		this.id = id;
+	}
+
 	public Long getId() {
 		return id;
 	}
