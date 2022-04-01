@@ -14,23 +14,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.organoprevidenziale.dto.RegistroPrevidenzialeDTO;
 import com.example.organoprevidenziale.model.RegistroPrevidenziale;
-import com.example.organoprevidenziale.repository.RegistroPrevidenzialeRepository;
+import com.example.organoprevidenziale.service.RegistroPrevidenzialeService;
 
 @RestController
 @RequestMapping("/api/registro")
-public class RegistroPrevidenzialeRestController {
+public class RegistroPrevidenzialeController {
 
 	@Autowired
-	private RegistroPrevidenzialeRepository repository;
+	private RegistroPrevidenzialeService registroPrevidenzialeService;
 
 	@GetMapping("/{cf}")
-	public RegistroPrevidenziale findById(@PathVariable(value = "cf", required = true) String cfInput) {
-		return repository.findByCodiceFiscale(cfInput);
+	public RegistroPrevidenzialeDTO findById(@PathVariable(value = "cf", required = true) String cfInput) {
+		RegistroPrevidenziale result = registroPrevidenzialeService.caricaPerCf(cfInput);
+		//qui andrebbe gestito con un 404 ma per semplicità mandiamo un oggetto vuoto
+		return result == null ? new RegistroPrevidenzialeDTO()
+				: RegistroPrevidenzialeDTO.buildRegistroPrevidenzialeDTOFromModel(result);
 	}
 
 	@GetMapping
-	public List<RegistroPrevidenziale> getAll() {
-		return (List<RegistroPrevidenziale>) repository.findAll();
+	public List<RegistroPrevidenzialeDTO> getAll() {
+		return RegistroPrevidenzialeDTO.createFilmDTOListFromModelList(registroPrevidenzialeService.listAll());
 	}
 
 	@PostMapping
@@ -47,7 +50,7 @@ public class RegistroPrevidenzialeRestController {
 		newEntry.setCodicePrevidenziale("REGPREV-" + newEntry.getCodiceFiscale());
 
 		RegistroPrevidenzialeDTO result = RegistroPrevidenzialeDTO
-				.buildRegistroPrevidenzialeDTOFromModel(repository.save(newEntry));
+				.buildRegistroPrevidenzialeDTOFromModel(registroPrevidenzialeService.inserisciNuovo(newEntry));
 		return result;
 	}
 

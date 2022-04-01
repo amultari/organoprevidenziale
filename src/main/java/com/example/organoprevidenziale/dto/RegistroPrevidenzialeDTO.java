@@ -1,5 +1,8 @@
 package com.example.organoprevidenziale.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.example.organoprevidenziale.model.RegistroPrevidenziale;
 
 public class RegistroPrevidenzialeDTO {
@@ -72,6 +75,13 @@ public class RegistroPrevidenzialeDTO {
 	public static RegistroPrevidenzialeDTO buildRegistroPrevidenzialeDTOFromModel(RegistroPrevidenziale input) {
 		return new RegistroPrevidenzialeDTO(input.getId(), input.getNome(), input.getCognome(),
 				input.getCodiceFiscale(), input.getCodicePrevidenziale());
+	}
+
+	public static List<RegistroPrevidenzialeDTO> createFilmDTOListFromModelList(
+			List<RegistroPrevidenziale> modelListInput) {
+		return modelListInput.stream().map(inputEntity -> {
+			return RegistroPrevidenzialeDTO.buildRegistroPrevidenzialeDTOFromModel(inputEntity);
+		}).collect(Collectors.toList());
 	}
 
 }
